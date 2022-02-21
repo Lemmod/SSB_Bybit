@@ -56,6 +56,65 @@ class DataMapper extends Core
     }
 
     /**
+     * insert_log
+     *
+     * @param  int $account_id
+     * @param  int $bot_id
+     * @param  string $pair
+     * @param  string $message
+     * @return void
+     */
+    public function insert_order_log($account_id , $pair , $message , $json_data = '') {
+
+        try{               
+            $stmt = $this->dbh->prepare("INSERT INTO order_log (account_id , pair ,  message , json_data) VALUES (:account_id , :pair ,  :message , :json_data)");
+            $stmt->bindParam(':account_id', $account_id);      
+            $stmt->bindParam(':pair', $pair);
+            $stmt->bindParam(':message', $message);
+            $stmt->bindParam(':json_data', $json_data);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }    
+
+    }
+
+     /**
+     * insert_log
+     *
+     * @param  int $account_id
+     * @param  int $bot_id
+     * @param  string $pair
+     * @param  string $message
+     * @return void
+     */
+    public function insert_info($account_id , $pair , $params) {
+
+       
+
+        try{
+               
+            $stmt = $this->dbh->prepare("INSERT INTO info (account_id , pair , params) VALUES (:account_id , :pair , :params)");
+            $stmt->bindParam(':account_id', $account_id);
+            $stmt->bindParam(':pair', $pair);
+            $stmt->bindParam(':params', $params);
+            $stmt->execute();
+
+     
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }    
+    }
+
+    /**
      * Insert the debug log to test speed of the alert_processor
      *
      * @param  mixed $internal_account_id
@@ -274,6 +333,212 @@ class DataMapper extends Core
         }   
 
     }
+
+    /**
+     * Update Leverage mode
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_leverage_mode($internal_account_id , $leverage_mode) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET leverage_mode = :leverage_mode WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':leverage_mode', $leverage_mode);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+    /**
+     * Update Hedge Mode
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_hedge($internal_account_id , $mode) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET hedge_mode = :hedge_mode WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':hedge_mode', $mode);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+    /**
+     * Update Stoploss setting
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_stoploss($internal_account_id , $setting) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET use_stoploss = :use_stoploss WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':use_stoploss', $setting);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+    /**
+     * Update Stoploss Percentage
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_stoploss_percentage($internal_account_id , $percentage) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET stoploss_percentage = :stoploss_percentage WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':stoploss_percentage', $percentage);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+    /**
+     * Update Active (Enable / Disable bot)
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_away_mode($internal_account_id , $status) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET away_mode = :away_mode WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':away_mode', $status);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+        
+    /**
+     * Update Away closure
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_away_closure($internal_account_id , $percentage) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET away_closure = :away_closure WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':away_closure', $percentage);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+    
+    /**
+     * Update Away stoploss
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_away_stoploss($internal_account_id , $percentage) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET away_stoploss = :away_stoploss WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':away_stoploss', $percentage);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+
+    /**
+     * Update Active (Enable / Disable bot)
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_active($internal_account_id , $status) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET active = :active WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':active', $status);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+
+
 
 
     /**

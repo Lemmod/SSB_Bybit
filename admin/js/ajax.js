@@ -188,6 +188,225 @@ function a_update_leverage(id , leverage)
     return false; 
 }
 
+// Set leverage
+function a_update_leverage_mode(id , leverage_mode)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_leverage_mode&id=' + id + '&mode=' + leverage_mode,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+// Set leverage
+function a_update_hedge(id , hedge_mode)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_hedge&id=' + id + '&mode=' + hedge_mode,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+
+
+// Set stop loss setting
+function a_update_stoploss(id , use_stoploss)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_stoploss&id=' + id + '&setting=' + use_stoploss,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+// Set leverage
+function a_update_stoploss_percentage(id , percentage)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_stoploss_percentage&id=' + id + '&percentage=' + percentage,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+// Set away closure
+function a_update_away_mode(id , status)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_away_mode&id=' + id + '&status=' + status,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+// Set away closure
+function a_update_away_closure(id , percentage)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_away_closure&id=' + id + '&percentage=' + percentage,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+// Set away_stoploss
+function a_update_away_stoploss(id , percentage)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_away_stoploss&id=' + id + '&percentage=' + percentage,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+// Set bot Status
+function a_update_active(id , status)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_active&id=' + id + '&status=' + status,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false; 
+}
+
+
 // Load all bots
 function a_load_bots(id)
 {
@@ -264,7 +483,12 @@ function a_load_logbook(id)
                 $('.logbook').append(response);
                 $('#logbook_table').DataTable({
                     stateSave: true ,
-                    "pageLength": 50 ,
+                    "pageLength": 25 ,
+                    "order" : [0 , "desc"] ,
+                });
+                $('#info_table').DataTable({
+                    stateSave: true ,
+                    "pageLength": 25 ,
                     "order" : [0 , "desc"] ,
                 });
             }
@@ -468,6 +692,93 @@ $(document).on("change", '.leverage', function() {
     } 
 
 
+});
+
+// Link to update leverage
+$(document).on("change", '.leverage_mode', function() { 
+    var id = $(this).attr("id");
+    var leverage_mode = $(this).val();
+
+    confirm_res = confirm("Are you sure you want to update the Leverage mode to " + leverage_mode + "?");
+    if(confirm_res) {
+         return a_update_leverage_mode(id , leverage_mode);
+    } 
+
+
+});
+
+// Link to update hedge_mode
+$(document).on("change", '.hedge_mode', function() { 
+    var id = $(this).attr("id");
+    var hedge_mode = $(this).val();
+
+    confirm_res = confirm("Change hedge mode?");
+    if(confirm_res) {
+         return a_update_hedge(id , hedge_mode);
+    } 
+});
+
+// Link to update stoploss setting
+$(document).on("change", '.use_stoploss', function() { 
+    var id = $(this).attr("id");
+    var use_stoploss = $(this).val();
+
+    confirm_res = confirm("Change stop loss setting?");
+    if(confirm_res) {
+         return a_update_stoploss(id , use_stoploss);
+    } 
+});
+
+// Link to update hedge_mode
+$(document).on("change", '.stoploss_percentage', function() { 
+    var id = $(this).attr("id");
+    var percentage = $(this).val();
+
+    confirm_res = confirm("Change S/L percentage?");
+    if(confirm_res) {
+         return a_update_stoploss_percentage(id , percentage);
+    } 
+});
+
+// Link to update hedge_mode
+$(document).on("change", '.away_mode', function() { 
+    var id = $(this).attr("id");
+    var status = $(this).val();
+
+    confirm_res = confirm("Change away mode status?");
+    if(confirm_res) {
+         return a_update_away_mode(id , status);
+    } 
+});
+
+// Link to update hedge_mode
+$(document).on("change", '.away_closure', function() { 
+    var id = $(this).attr("id");
+    var percentage = $(this).val();
+
+    confirm_res = confirm("Change close %?");
+    if(confirm_res) {
+         return a_update_away_closure(id , percentage);
+    } 
+});
+
+// Link to update hedge_mode
+$(document).on("change", '.away_stoploss', function() { 
+    var id = $(this).attr("id");
+    var percentage = $(this).val();
+
+    confirm_res = confirm("Change S/L percentage for away mode?");
+    if(confirm_res) {
+         return a_update_away_stoploss(id , percentage);
+    } 
+});
+
+// Link to update max active deals
+$(document).on("change", '.active', function() { 
+    var id = $(this).attr("id");
+    var status = $(this).val();
+
+    return a_update_active(id , status);
 });
 
 // Submit button manage bots

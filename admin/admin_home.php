@@ -14,7 +14,7 @@ if (!isset($_SESSION['loggedin'])) {
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		
-		<title>Smart Simple Bot</title>
+		<title>Smart Simple Bot - Bybit Edition <img src="https://s1.bycsi.com/asset/image/logo-white.svg"></img></title>
 		
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.0.0/jq-3.2.1/dt-1.10.16/r-2.2.1/datatables.min.css"/>
 		<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -25,44 +25,100 @@ if (!isset($_SESSION['loggedin'])) {
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>	
 		<script type="text/javascript" src="js/ajax.js"></script>
 		<script>
-		$(document).ready(function(){
+
+		function get_status() {
+			$.ajax({
+				url: "requesthandler.php?action=load_status",
+				context: document.body,
+				success: function (response) {
+					if (response == 'ERROR_NOT_LOGGED_IN') {
+						location.href = 'logout.php?response=incorrect_ajax_call';
+					} else {
+						$('#status').append(response);
+						setTimeout(function () {
+							sendRequest(); //this will send request again and again;
+						}, 5000);
+					}
+				}
+			});
+		}
+
+
+		$(document).ready(function () {
 			var $loading = $('.loading').hide();
-				$(document)
+			$(document)
 				.ajaxStart(function () {
 					$loading.show();
 				})
-				.ajaxComplete(function(){
-					$(".input_float").inputFilter(function(value) {
- 						return /^-?\d*[.]?\d{0,2}$/.test(value); 
-					}) ,
-					$(".input_number").inputFilter(function(value) {
-						return /^-?\d*$/.test(value); 
-					});
+				.ajaxComplete(function () {
+					$(".input_float").inputFilter(function (value) {
+							return /^-?\d*[.]?\d{0,2}$/.test(value);
+						}),
+						$(".input_number").inputFilter(function (value) {
+							return /^-?\d*$/.test(value);
+						});
 				})
 				.ajaxStop(function () {
 					$loading.hide();
+				});
+
+			$(function () {
+				$("#dialog").dialog({
+					autoOpen: false
+				});
 			});
 
-            $( function() {
-                $( "#dialog" ).dialog({
-                    autoOpen: false
-                });
-            } );
+			
 
-			$.ajax({ 
+			$.ajax({
 				url: "requesthandler.php?action=load_all_accounts",
 				context: document.body,
 				success: function (response) {
-                    if (response == 'ERROR_NOT_LOGGED_IN') {
-                        location.href = 'logout.php?response=incorrect_ajax_call';
-                    } else {
-					    $('#accounts').prepend(response);
-                    }
+					if (response == 'ERROR_NOT_LOGGED_IN') {
+						location.href = 'logout.php?response=incorrect_ajax_call';
+					} else {
+						$('#accounts').prepend(response);
+						$('#account_table').DataTable({
+							responsive: true,
+							columnDefs: [{
+								responsivePriority: 1,
+								targets: 0
+								},
+								{
+								responsivePriority: 10001,
+								targets: 4
+								},
+								{
+								responsivePriority: 2,
+								targets: -2
+								}
+							],
+							"searching": false,
+							"paging": false,
+							"ordering": false,
+							"info": false,
+							order: [ 
+								( [ 8, 'desc' ] ) 
+							] 
+						});
+					}
+				}
+			});
+
+			$.ajax({
+				url: "requesthandler.php?action=load_status",
+				context: document.body,
+				success: function (response) {
+					if (response == 'ERROR_NOT_LOGGED_IN') {
+						location.href = 'logout.php?response=incorrect_ajax_call';
+					} else {
+						$('#status').append(response);
+					}
 				}
 			});
 
 			
-		});	
+		});
 		</script>
 	</head>
 	
@@ -76,7 +132,8 @@ if (!isset($_SESSION['loggedin'])) {
 
 		<nav class="navtop">
 			<div>
-				<h1>Smart Simple Bot</h1>
+				<h1>Smart Simple Bot - Bybit Edition</h1>
+				<a href="#" id="status"> <i class="fas fa-wifi"></i> </a>
                 <a class="debug_log_link"><i class="fas fa-bug"></i>Debug log</a>
 				<a href="logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
 			</div>
@@ -108,8 +165,8 @@ if (!isset($_SESSION['loggedin'])) {
 					<form method="POST" id="add_account" onsubmit="return a_add_account();">
 						<input type="hidden" name="action" id="action" value="add_account" />
                         <div class="field">
-							<label> Account ID: (Can be any numeric value but make sure you keep them unique for each account)  </label>
-							<input type="text" maxlength="10" class="input_number" name="bot_account_id" id="name" /> 
+							<label> Account ID: (Can be any value but make sure you keep them unique for each account)  </label>
+							<input type="text" maxlength="10" name="bot_account_id" id="name" /> 
 						</div>
 						<div class="field">
 							<label> Name:  </label>

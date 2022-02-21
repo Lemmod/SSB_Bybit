@@ -98,13 +98,18 @@ function create_input_float($name , $class , $id , $current_value) {
 }
 
 // Create a dropdown with an array for options
-function create_dropdown_options($options , $name , $class , $id , $current_value) {
+function create_dropdown_options($options , $name , $class , $id , $current_value , $use_different_key = false) {
 
-    $html = '<select name="'.$name.'"  class="'.$class.'">';
+    $html = '<select name="'.$name.'" id="'.$id.'"  class="'.$class.'">';
 
-    foreach($options as $opt) {
-        $selected = ($opt == $current_value) ? 'selected' : '';
-        $html.= '<option value="'.$opt.'" '.$selected.'>'.$opt.'</option>';
+    foreach($options as $key => $opt) {
+        if (!$use_different_key) {
+            $selected = ($opt == $current_value) ? 'selected' : '';
+            $html.= '<option '.$class.' value="'.$opt.'" '.$selected.'>'.$opt.'</option>';
+        } else {
+            $selected = ($key == $current_value) ? 'selected' : '';
+            $html.= '<option '.$class.' value="'.$key.'" '.$selected.'>'.$opt.'</option>';
+        }
 
     }
 

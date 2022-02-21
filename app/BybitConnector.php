@@ -80,7 +80,7 @@ class BybitConnector
      * Set the leverage
      */
     public function set_leverage($params) {
-        return $this->request_info('private/linear/position/set-leverage' , $params , "POST");
+        return $this->request_info('private/linear/position/switch-isolated' , $params , "POST");
     }
     
     /**
@@ -104,6 +104,13 @@ class BybitConnector
         return $this->request_info('private/linear/order/create' , $params , "POST");
     }
 
+    /**
+     * Update position
+     */
+    public function update_position($params) {
+        return $this->request_info('private/linear/position/trading-stop' , $params , "POST");
+    }
+
 
     /**
      * Calculate the clean order size to parse to Bybit
@@ -120,7 +127,7 @@ class BybitConnector
                 $notional = strlen(substr(strrchr($qty_step, "."), 1));
 
                 if ($order_size < $min_trading_qty) {
-                    $clean_order_size = $min_trading_qty;
+                    $clean_order_size = $min_trading_qty;                   
                 } else {
                     $clean_order_size = round( $order_size , $notional);
                 }
@@ -129,6 +136,31 @@ class BybitConnector
 
          return $clean_order_size;
      }
+
+    /**
+     * Calculate the clean order size to parse to Bybit
+     */
+
+    public function calculate_clean_close_amount($symbols , $pair , $amount) {
+
+        foreach($symbols['result'] as $symbol) {
+           if ($symbol['name'] == $pair) {
+
+               $min_trading_qty = $symbol['lot_size_filter']['min_trading_qty'];
+               $qty_step = $symbol['lot_size_filter']['qty_step'];
+               
+               $notional = strlen(substr(strrchr($qty_step, "."), 1));
+
+               if ($amount < $min_trading_qty) {
+                   $clean_amount = $min_trading_qty;                   
+               } else {
+                   $clean_amount = round( $amount , $notional);
+               }
+           }
+        }
+
+        return $clean_amount;
+    }
 
      /**
      * Create an overview of total open positions
@@ -143,11 +175,29 @@ class BybitConnector
             if ($position['data']['size'] > 0) {
 
                 $result[$i] = array( 
-                    'symbol' => $position['data']['symbol']);
+                    'symbol' => $position['data']['symbol'],
+                    'side' => $position['data']['side'],
+                    'size' => $position['data']['size'],
+                    'entry_price' => $position['data']['entry_price']);
                 $i++;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Get the current position for the correct side
+     */
+    public function get_open_position($open_positions , $symbol , $side) {
+
+        $deals = $this->result_open_positions($open_positions);
+
+        foreach ($deals as $deal) {
+            if ($deal['side'] == $side && $deal['symbol'] == $symbol) {
+                return $deal;
+            }
+        }      
+
     }
 }
