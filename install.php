@@ -205,7 +205,7 @@ if($action == "create_tables") {
       `input` text NOT NULL,
       `file_name` text NOT NULL,
       `processed` tinyint(1) NOT NULL DEFAULT 0,
-      `processed_time` timestamp NOT NULL DEFAULT current_timestamp()
+      `processed_time` timestamp NOT NULL DEFAULT \'0000-00-00 00:00:00\'
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
     
     DROP TABLE IF EXISTS `users`;
