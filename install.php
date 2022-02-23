@@ -107,6 +107,10 @@ if ($step == 3) {
 if($action == "create_tables") {
 
     $create_tables = '
+    
+    SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+    SET AUTOCOMMIT = 0;
+    START TRANSACTION;
 
     DROP TABLE IF EXISTS `accounts`;
     CREATE TABLE `accounts` (
