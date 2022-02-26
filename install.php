@@ -301,3 +301,15 @@ if($action == "insert_user") {
 
 }
 
+if ($step == "sh_creator") {
+
+  echo '<h2> Text for .sh file </h2>';
+
+  echo '<textarea cols="150" rows="4">'.$_SERVER['DOCUMENT_ROOT'].'/alert_processor.php</textarea>';
+
+  echo '<h2> Command to run screen </h2>';
+
+  echo '<textarea cols="150" rows="4">screen -d -m sh '.$_SERVER['DOCUMENT_ROOT'].'/auto_processor.sh</textarea>';
+
+}
+
