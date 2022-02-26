@@ -311,6 +311,8 @@ foreach($all_accounts as $account_wrapper) {
 
                         // First set the desired leverage
                         $set_leverage = $bybit->set_leverage(['symbol' => $data['pair'] , 'is_isolated' => $account_settings['leverage_mode'] == 'cross' ? false : true , 'buy_leverage' => $account_settings['leverage'], 'sell_leverage' => $account_settings['leverage']] );
+                        $set_leverage_size = $bybit->set_leverage_size(['symbol' => $data['pair'] , 'buy_leverage' => $account_settings['leverage'], 'sell_leverage' => $account_settings['leverage']]);
+                        
                         $wallet_balance = $bybit->wallet_info()['result']['USDT']['equity'];
                         $get_price = $bybit->get_symbol_value($data['pair']);
 
