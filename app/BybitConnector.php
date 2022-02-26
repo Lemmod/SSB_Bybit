@@ -84,6 +84,14 @@ class BybitConnector
     }
     
     /**
+     * Set leverage size
+     */
+
+    public function set_leverage_size($params) {
+        return $this->request_info('private/linear/position/set-leverage' , $params , "POST");
+    }
+    
+    /**
      * Get the lastes price of the symbol
      */
     public function get_symbol_value($symbol) {
