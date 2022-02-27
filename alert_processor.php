@@ -178,12 +178,13 @@ foreach($all_accounts as $account_wrapper) {
                         // Change S/L when deal is confirmed
                         $stop_loss_price = false;
                         if($account_settings['use_stoploss']) {
-                            $stop_loss_price = number_format( $pos_info['entry_price'] - ($pos_info['entry_price']  * ($account_settings['away_stoploss'] / 100)) , 4);
+                            $stop_loss_price = number_format( $pos_info['entry_price'] - ($pos_info['entry_price']  * ($account_settings['away_stoploss'] / 100)) , 4 , '.' , '');
                         }
         
                         // Update Stop Loss
                         $update_sl = $bybit->update_position(['symbol' => $data['pair'] , 'side' => 'Buy' , 'stop_loss' => $stop_loss_price]);
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , 'Updated S/L to '.$stop_loss_price);
+                        $dataMapper->insert_order_log($data['account_id'] , $data['pair'] , 'Edit S/L' , json_encode($update_sl));
 
                         // Add closure order
                         $close_amount = $bybit->calculate_clean_close_amount($symbols , $data['pair'] , ($pos_info['size'] * ($account_settings['away_closure'] / 100)));
@@ -221,12 +222,13 @@ foreach($all_accounts as $account_wrapper) {
                         // Change S/L when deal is confirmed
                         $stop_loss_price = false;
                         if($account_settings['use_stoploss']) {
-                            $stop_loss_price = number_format( $pos_info['entry_price'] + ($pos_info['entry_price']  * ($account_settings['away_stoploss'] / 100)) , 4);
+                            $stop_loss_price = number_format( $pos_info['entry_price'] + ($pos_info['entry_price']  * ($account_settings['away_stoploss'] / 100)) , 4 , '.' , '');
                         }
         
                         // Update Stop Loss
                         $update_sl = $bybit->update_position(['symbol' => $data['pair'] , 'side' => 'Sell' , 'stop_loss' => $stop_loss_price]);        
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , 'Updated S/L to '.$stop_loss_price);
+                        $dataMapper->insert_order_log($data['account_id'] , $data['pair'] , 'Edit S/L' , json_encode($update_sl));
 
                         // Add closure order
                         $close_amount = $bybit->calculate_clean_close_amount($symbols , $data['pair'] , ($pos_info['size'] * ($account_settings['away_closure'] / 100)));
@@ -312,7 +314,7 @@ foreach($all_accounts as $account_wrapper) {
                         // First set the desired leverage
                         $set_leverage = $bybit->set_leverage(['symbol' => $data['pair'] , 'is_isolated' => $account_settings['leverage_mode'] == 'cross' ? false : true , 'buy_leverage' => $account_settings['leverage'], 'sell_leverage' => $account_settings['leverage']] );
                         $set_leverage_size = $bybit->set_leverage_size(['symbol' => $data['pair'] , 'buy_leverage' => $account_settings['leverage'], 'sell_leverage' => $account_settings['leverage']]);
-                        
+
                         $wallet_balance = $bybit->wallet_info()['result']['USDT']['equity'];
                         $get_price = $bybit->get_symbol_value($data['pair']);
 
@@ -339,7 +341,7 @@ foreach($all_accounts as $account_wrapper) {
                                 'time_in_force' => 'GoodTillCancel',
                                 'close_on_trigger' => false ,
                                 'reduce_only' => false ,
-                                'stop_loss' => number_format( $stop_loss_price , 4)
+                                'stop_loss' => number_format( $stop_loss_price , 4 , '.' , '')
                             ];
 
                             $order = $bybit->create_order($order_params);
@@ -361,7 +363,7 @@ foreach($all_accounts as $account_wrapper) {
                                 'time_in_force' => 'GoodTillCancel',
                                 'close_on_trigger' => false ,
                                 'reduce_only' => false ,
-                                'stop_loss' => number_format( $stop_loss_price , 4)
+                                'stop_loss' => number_format( $stop_loss_price , 4 , '.' , '')
                             ];
 
                             $order = $bybit->create_order($order_params);
@@ -384,7 +386,7 @@ foreach($all_accounts as $account_wrapper) {
                      */
                     if (is_null($deals)) {
                         $errors_3c++;
-                        $dataMapper->insert_log($data['account_id'] , 0, $data['pair'] , 'Deal not added , ERROR - 3Commas deal count is null');
+                        $dataMapper->insert_log($data['account_id'] , 0, $data['pair'] , 'Deal not added , ERROR - Bybit deal count is null');
                     }  else {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , 'Deal not added , max active deals hit ( Active : '.$count_active_deals.' , Max : '.$account_settings['max_active_deals'].' )');
                     }
