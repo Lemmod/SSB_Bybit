@@ -515,7 +515,7 @@ if($action == 'load_tv_alerts') {
             $result_tp_short['account_id'] = $account_info['bot_account_id'];
             $result_tp_short['message'] = 'close_position';
             $result_tp_short['pair'] = $bot['name'];
-            $result_tp_short['direction'] = 'long';
+            $result_tp_short['direction'] = 'short';
 
             $table->tr()
                 ->td($bot['name'])
