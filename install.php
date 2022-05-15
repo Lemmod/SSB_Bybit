@@ -12,10 +12,12 @@ It won't contain all possibilitys from the 3c API , mainly used for updating mul
 
 */
 
-include ('app/Config.php');
-include ('app/Core.php');
-include ('app/DataMapper.php');
-include ('app/functions.php');
+include (__DIR__.'/app/Config.php');
+include (__DIR__.'/app/Core.php');
+include (__DIR__.'/app/BybitConnector.php');
+include (__DIR__.'/app/DataMapper.php');
+include (__DIR__.'/app/DataReader.php');
+include (__DIR__.'/app/functions.php');
 
 if (empty(DB_DBNAME) OR DB_DBNAME == 'your_database_name') {
     echo '<h1> Database name not set , please change Config.php to correct settings.</h1>';
