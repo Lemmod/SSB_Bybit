@@ -80,7 +80,7 @@ class DataReader extends Core
 
         try{
 
-            $stmt = $this->dbh->prepare('SELECT * FROM accounts WHERE user_id = :user_id');
+            $stmt = $this->dbh->prepare('SELECT * FROM accounts WHERE user_id = :user_id ORDER BY bot_account_id ASC');
             $stmt->bindParam(':user_id', $user_id);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -237,6 +237,27 @@ class DataReader extends Core
         catch (PDOExecption $e){
             echo $e->getMessage();
         }    
+    }
+
+    public function get_latest_order_trigger($bot_account_id , $pair , $direction) {
+
+        try{
+
+            $stmt = $this->dbh->prepare('SELECT * FROM order_log WHERE account_id = :bot_account_id AND pair = :pair AND direction = :direction ORDER BY timestamp DESC LIMIT 1 ');
+            $stmt->bindParam(':bot_account_id', $bot_account_id);
+            $stmt->bindParam(':pair', $pair);
+            $stmt->bindParam(':direction', $direction);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $stmt = null;
+
+            return $result;
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }    
+
     }
 
     
