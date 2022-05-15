@@ -16,13 +16,20 @@ if (!isset($_SESSION['loggedin'])) {
 		
 		<title>Smart Simple Bot - Bybit Edition <img src="https://s1.bycsi.com/asset/image/logo-white.svg"></img></title>
 		
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.0.0/jq-3.2.1/dt-1.10.16/r-2.2.1/datatables.min.css"/>
-		<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-        <link href="css/style.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.0.0/jq-3.2.1/dt-1.10.16/r-2.2.1/datatables.min.css"/> 
 		<script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.0.0/jq-3.2.1/dt-1.10.16/r-2.2.1/datatables.min.js"></script>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+		</script>
+
+		<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+        
+		<!--  -->
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>	
+
+		<link href="css/style.css" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="js/ajax.js"></script>
 		<script>
 
@@ -144,10 +151,10 @@ if (!isset($_SESSION['loggedin'])) {
             <div class="home hide"><a class="back_home_link"><i class="fas fa-home"></i> Back to home</a></div>
        
             <div class="workspace">
-                <h2>Accounts</h2>
+                <h2>Bots</h2>
 
                 <div id="accounts">
-                    <i class="fas fa-plus"></i>  <a class="add_account_link" ac_id="1"> Add account</a>
+                    <i class="fas fa-plus"></i>  <a class="add_account_link" ac_id="1"> Add bot</a>
                     </div>
 
                     <div id="dialog" title="Notice">
@@ -182,6 +189,30 @@ if (!isset($_SESSION['loggedin'])) {
 						</div>
 						<input type="submit" name="submit_form" value="Submit">
 					</form>
+				</div>
+
+				<!-- Div for editing an bot -->
+				<div class="advanced_settings hide">
+
+					<ul class="nav nav-tabs" id="myTab" role="tablist">
+						<li class="nav-item" role="presentation">
+						<button class="nav-link active" id="bot_settings-tab" data-bs-toggle="tab"
+							data-bs-target="#bot_settings" type="button" role="tab" aria-controls="bot_settings"
+							aria-selected="true">Bot settings</button>
+						</li>
+						<li class="nav-item" role="presentation">
+						<button class="nav-link" id="tv_alerts-tab" data-bs-toggle="tab" data-bs-target="#tv_alerts"
+							type="button" role="tab" aria-controls="tv_alerts" aria-selected="false">TradingView alerts</button>
+						</li>
+					</ul>
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="bot_settings" role="tabpanel"
+						aria-labelledby="bot_settings-tab">
+						</div>
+						<div class="tab-pane fade" id="tv_alerts" role="tabpanel" aria-labelledby="tv_alerts-tab">
+						</div>
+					</div>
+
 				</div>
 
 				<!-- Edit account -->
