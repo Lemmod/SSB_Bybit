@@ -15,10 +15,12 @@ $time = explode(' ', $time);
 $time = $time[1] + $time[0];
 $start = $time;
 
-include ('app/Config.php');
-include ('app/Core.php');
-include ('app/DataMapper.php');
-include ('app/functions.php');
+include (__DIR__.'/app/Config.php');
+include (__DIR__.'/app/Core.php');
+include (__DIR__.'/app/BybitConnector.php');
+include (__DIR__.'/app/DataMapper.php');
+include (__DIR__.'/app/DataReader.php');
+include (__DIR__.'/app/functions.php');
 
 
 $dataMapper = new DataMapper();
