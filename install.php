@@ -107,7 +107,8 @@ if ($step == 3) {
 if($action == "create_tables") {
 
     $create_tables = '
-    
+
+
     SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
     SET AUTOCOMMIT = 0;
     START TRANSACTION;
@@ -127,6 +128,7 @@ if($action == "create_tables") {
       `account_setting_id` int(12) NOT NULL,
       `internal_account_id` int(8) NOT NULL,
       `max_active_deals` int(8) NOT NULL,
+      `mad_direction` enum(\'both\',\'short_only\',\'long_only\') NOT NULL DEFAULT \'both\',
       `bo_size` decimal(10,2) NOT NULL DEFAULT 5.00,
       `active` tinyint(1) NOT NULL DEFAULT 0,
       `leverage` text NOT NULL,
@@ -139,6 +141,7 @@ if($action == "create_tables") {
       `away_stoploss` decimal(10,2) NOT NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
     DROP VIEW IF EXISTS `debug_calls`;
+    
     CREATE TABLE `debug_calls` (
     `time` varchar(24)
     ,`jobs` bigint(21)
@@ -198,6 +201,9 @@ if($action == "create_tables") {
       `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
       `account_id` varchar(255) NOT NULL,
       `pair` varchar(255) NOT NULL,
+      `direction` varchar(50) NOT NULL,
+      `trigger_condition` varchar(50) NOT NULL,
+      `away_mode_triggered` tinyint(1) NOT NULL DEFAULT 0,
       `message` text NOT NULL,
       `json_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -221,11 +227,11 @@ if($action == "create_tables") {
     DROP TABLE IF EXISTS `debug_calls`;
     
     DROP VIEW IF EXISTS `debug_calls`;
-    CREATE OR REPLACE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `debug_calls`  AS SELECT date_format(`debug_log`.`timestamp`,\'%Y-%m-%d %H:00:00\') AS `time`, count(0) AS `jobs`, sum(`debug_log`.`alerts_processed`) AS `alerts`, sum(`debug_log`.`calls_3c`) AS `calls`, sum(`debug_log`.`calls_3c`) / sum(`debug_log`.`alerts_processed`) AS `average_calls`, sum(`debug_log`.`errors_3c`) AS `errors`, sum(`debug_log`.`time_passed`) / count(0) AS `avg_job_time`, max(`debug_log`.`time_passed`) AS `max_job_time`, sum(case when `debug_log`.`time_passed` > 15 then 1 else 0 end) AS `exceed_15s`, sum(case when `debug_log`.`time_passed` > 20 then 1 else 0 end) AS `exceed_20s`, sum(case when `debug_log`.`time_passed` > 30 then 1 else 0 end) AS `exceed_30s` FROM `debug_log` GROUP BY date_format(`debug_log`.`timestamp`,\'%Y-%m-%d %H:00:00\') ORDER BY date_format(`debug_log`.`timestamp`,\'%Y-%m-%d %H:00:00\') DESC ;
+    CREATE ALGORITHM=UNDEFINED DEFINER=`ssb_bybit`@`localhost` SQL SECURITY DEFINER VIEW `debug_calls`  AS SELECT date_format(`debug_log`.`timestamp`,\'%Y-%m-%d %H:00:00\') AS `time`, count(0) AS `jobs`, sum(`debug_log`.`alerts_processed`) AS `alerts`, sum(`debug_log`.`calls_3c`) AS `calls`, sum(`debug_log`.`calls_3c`) / sum(`debug_log`.`alerts_processed`) AS `average_calls`, sum(`debug_log`.`errors_3c`) AS `errors`, sum(`debug_log`.`time_passed`) / count(0) AS `avg_job_time`, max(`debug_log`.`time_passed`) AS `max_job_time`, sum(case when `debug_log`.`time_passed` > 15 then 1 else 0 end) AS `exceed_15s`, sum(case when `debug_log`.`time_passed` > 20 then 1 else 0 end) AS `exceed_20s`, sum(case when `debug_log`.`time_passed` > 30 then 1 else 0 end) AS `exceed_30s` FROM `debug_log` GROUP BY date_format(`debug_log`.`timestamp`,\'%Y-%m-%d %H:00:00\') ORDER BY date_format(`debug_log`.`timestamp`,\'%Y-%m-%d %H:00:00\') AS `DESCdesc` ASC  ;
     DROP TABLE IF EXISTS `logbook`;
     
     DROP VIEW IF EXISTS `logbook`;
-    CREATE OR REPLACE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `logbook`  AS SELECT `log`.`log_id` AS `log_id`, `log`.`timestamp` AS `timestamp`, `log`.`account_id` AS `account_id`, `accounts`.`account_name` AS `account_name`, `log`.`pair` AS `pair`, `log`.`message` AS `message` FROM (`log` left join `accounts` on(`log`.`account_id` = `accounts`.`bot_account_id`)) ORDER BY `log`.`log_id` DESC ;
+    CREATE ALGORITHM=UNDEFINED DEFINER=`ssb_bybit`@`localhost` SQL SECURITY DEFINER VIEW `logbook`  AS SELECT `log`.`log_id` AS `log_id`, `log`.`timestamp` AS `timestamp`, `log`.`account_id` AS `account_id`, `accounts`.`account_name` AS `account_name`, `log`.`pair` AS `pair`, `log`.`message` AS `message` FROM (`log` left join `accounts` on(`log`.`account_id` = `accounts`.`bot_account_id`)) ORDER BY `log`.`log_id` AS `DESCdesc` ASC  ;
     
     
     ALTER TABLE `accounts`
@@ -276,7 +282,6 @@ if($action == "create_tables") {
     
     ALTER TABLE `users`
       MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
-    COMMIT;
     ';
 
     // Create the tables

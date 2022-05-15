@@ -145,3 +145,41 @@ function pr($data) {
     var_dump($data);
     echo '</pre>';
 }
+
+// Create an bot card
+function create_bot_card($response , $bybit) {
+
+    $wallet_balance = $bybit->wallet_info()['result']['USDT']['wallet_balance'];
+
+    $active_color = $response['active'] == 1 ? 'border-success' : 'border-danger';
+
+    if ($response['mad_direction'] == 'both') {
+        $direction = '<span class="green">Long</span> + <span class="red">Short</span>';
+    } elseif ($response['mad_direction'] == 'long_only') {
+        $direction = '<span class="green">Long</span>';
+    } elseif ($response['mad_direction'] == 'short_only') {
+        $direction = '<span class="red">Short</span>';
+    } 
+
+    $code = '
+    <div class="col">
+        <div class="card text-white '.$active_color.' bg-dark mb-3">
+            <div class="card-header"><strong>'.$response['3c_id'].'</strong></div>
+            <div class="card-body">
+            <h2>'.$response['internal_name'].'</h2>
+
+            <ul class="list-group list-group-flush bg-dark">
+                <li class="list-group-item bg-dark">Direction : '.$direction.'</li>
+                <li class="list-group-item bg-dark">Max deals : '.create_dropdown_number_with_id(0 , 20 , 'mad_dropdown' , 'mad_dropdown' , 'account_'.$response['internal_id'] , $response['mad']).'</li>
+                <li class="list-group-item bg-dark">IPB : '.create_dropdown_number_with_id(1 , 500 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1).' </li>
+                <li class="list-group-item bg-dark">
+                    <a class="logbook_link" id="account_'.$response['internal_id'].'"><i class="fas fa-book"></i>  Logbook</a> | <a class="advanced_settings_link" id="account_'.$response['internal_id'].'"> <i class="fas fa-cog"></i> Advanced settings</a>
+                </li>
+            </ul>
+
+            </div>
+        </div>
+    </div>';
+
+    echo $code;
+}

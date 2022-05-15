@@ -36,6 +36,13 @@ if($action == 'load_all_accounts') {
     $i = 0;
     foreach ($accounts as $account) {
 
+        if ($account['bot_account_id'] != 'ML123456') {
+            //continue;
+        }
+
+        $test = $dataReader->get_latest_order_trigger('ML123456','XRPUSDT','open_long');
+        //pr($test);
+
         $settings = $dataReader->get_account_settings($account['internal_account_id']);
 
         $account_info = $dataReader->get_account_info_internal($account['internal_account_id']);
@@ -45,6 +52,69 @@ if($action == 'load_all_accounts') {
         $account_response[$i]['3c_id'] = $account['bot_account_id'];
         $account_response[$i]['internal_name'] = $account['account_name'];
         $account_response[$i]['mad'] = $settings['max_active_deals'];
+        $account_response[$i]['mad_direction'] = $settings['mad_direction'];
+        $account_response[$i]['bo_size'] = $settings['bo_size'];
+        $account_response[$i]['active'] = $settings['active'];
+        $account_response[$i]['leverage'] = $settings['leverage'];
+        $account_response[$i]['leverage_mode'] = $settings['leverage_mode'];
+        $account_response[$i]['hedge_mode'] = $settings['hedge_mode'];
+        $account_response[$i]['use_stoploss'] = $settings['use_stoploss'];
+        $account_response[$i]['stoploss_percentage'] = $settings['stoploss_percentage'];
+        $account_response[$i]['away_mode'] = $settings['away_mode'];
+        $account_response[$i]['away_closure'] = $settings['away_closure'];
+        $account_response[$i]['away_stoploss'] = $settings['away_stoploss'];
+        $account_response[$i]['api_key'] = $account_info['api_key'];
+        $account_response[$i]['api_secret'] = $account_info['api_secret'];
+ 
+        $i++;
+    }
+
+    //pr($account_response);
+
+    // New style boxes
+    echo '<div class="row row-cols-3 row-cols-md-3 g-10">';
+    foreach ($account_response as $response) {
+
+        $bybit = new BybitConnector($response['api_key'] , $response['api_secret']);
+
+        echo create_bot_card($response , $bybit);
+    }
+    echo '</div>';
+
+}
+
+if ($action == 'load_advanced_settings') {
+
+    $explode = explode('_' , $_REQUEST['id']);
+    $internal_account_id = $explode[1];
+    
+
+    $accounts = $dataReader->get_user_accounts($_SESSION['user_id']);
+
+    // Terminate if the user is nog logged in
+    check_credentials($_SESSION['user_id']);
+
+    
+
+    $account_response = [];
+
+    $i = 0;
+    foreach ($accounts as $account) {
+
+        if ($account['internal_account_id'] != $internal_account_id) {
+            continue;
+        }
+
+        $settings = $dataReader->get_account_settings($account['internal_account_id']);
+
+        $account_info = $dataReader->get_account_info_internal($account['internal_account_id']);
+
+     
+        $account_response[$i]['internal_id'] = $account['internal_account_id'];
+        $account_response[$i]['3c_id'] = $account['bot_account_id'];
+        $account_response[$i]['internal_name'] = $account['account_name'];
+        $account_response[$i]['mad'] = $settings['max_active_deals'];
+        $account_response[$i]['mad_direction'] = $settings['mad_direction'];
         $account_response[$i]['bo_size'] = $settings['bo_size'];
         $account_response[$i]['active'] = $settings['active'];
         $account_response[$i]['leverage'] = $settings['leverage'];
@@ -59,7 +129,7 @@ if($action == 'load_all_accounts') {
         $i++;
     }
 
-   
+    echo '<h2> Advanced settings for account '.$account_response[0]['internal_name'].' </h2>';
 
     $table = new STable();
     $table->class = 'table table-hover table-striped table-dark table-bordered';
@@ -70,6 +140,7 @@ if($action == 'load_all_accounts') {
         ->th('Account ID')
         ->th('Name')
         ->th('Max deals')
+        ->th('Direction')
         ->th('BO (%)')
         ->th('Leverage x')
         ->th('Leverage type')
@@ -81,7 +152,6 @@ if($action == 'load_all_accounts') {
         ->th('Away move S/L %')
         //->th('S/L %')
         ->th('Status')
-        ->th('TV Alerts')
         ->th('Logs')
         ->th('Delete');
         
@@ -99,6 +169,7 @@ if($action == 'load_all_accounts') {
         ->td($response['3c_id'])
         ->td($response['internal_name'])
         ->td(create_dropdown_number_with_id(0 , 20 , 'mad_dropdown' , 'mad_dropdown' , 'account_'.$response['internal_id'] , $response['mad']))
+        ->td(create_dropdown_options(['both' => 'Short + Long' , 'short_only' => 'Short Only' , 'long_only' => 'Long Only'], '' , 'mad_direction' , 'account_'.$response['internal_id'] , $response['mad_direction'] , true))
         ->td(create_dropdown_number_with_id(1 , 500 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1))
         ->td(create_dropdown_number_with_id(0 , 100 , 'leverage' , 'leverage' , 'account_'.$response['internal_id'] , $response['leverage']))
         ->td(create_dropdown_options(['cross' , 'isolated'], '' , 'leverage_mode' , 'account_'.$response['internal_id'] , $response['leverage_mode']))
@@ -109,8 +180,6 @@ if($action == 'load_all_accounts') {
         ->td(create_dropdown_number_with_id(0 , 100 , 'away_closure' , 'away_closure' , 'account_'.$response['internal_id'] , $response['away_closure']))
         ->td(create_dropdown_number_with_id(0 , 100 , 'away_stoploss' , 'away_stoploss' , 'account_'.$response['internal_id'] , $response['away_stoploss']))
         ->td(create_dropdown_options(['0' => 'Disabled' , '1' => 'Enabled'], '' , 'active' , 'account_'.$response['internal_id'] , $response['active'] , true))
-        //->td($switch)
-        ->td('<a class="tv_alerts_link" id="account_'.$response['internal_id'].'"><i class="fas fa-chart-bar"></i>  Trading View alerts</a>')
         ->td('<a class="logbook_link" id="account_'.$response['internal_id'].'"><i class="fas fa-book"></i>  Logbook</a>')
         ->td('<a class="delete_account_link" id="account_'.$response['internal_id'].'"><i class="fas fa-trash"></i>  Delete</a>');
     }
@@ -222,6 +291,24 @@ if($action == 'update_max_active_deals') {
     $dataMapper->update_max_active_deals($internal_account_id , $_REQUEST['deals']);
 
     echo 'Max deals set to '.$_REQUEST['deals'];
+}
+
+/**
+ * Update mad direction
+ */
+if($action == 'update_mad_direction') {
+
+    $explode = explode('_' , $_REQUEST['id']);
+    $internal_account_id = $explode[1];
+
+    $account_info = $dataReader->get_account_info_internal($internal_account_id);
+
+    // Terminate if the user is nog logged in
+    check_credentials($account_info['user_id']);
+
+    $dataMapper->update_mad_direction($internal_account_id , $_REQUEST['direction']);
+
+    echo 'Direction set to '.$_REQUEST['direction'];
 }
 
 /**
@@ -490,7 +577,9 @@ if($action == 'load_tv_alerts') {
         ->th('Long')
         ->th('Short')
         ->th('Long Take Profit')
-        ->th('Short Take profit');
+        ->th('Short Take profit')
+        ->th('Long Close')
+        ->th('Short Close');
     
    
     foreach ($symbols['result'] as $bot) {
@@ -501,28 +590,46 @@ if($action == 'load_tv_alerts') {
 
             $result['account_id'] = $account_info['bot_account_id'];
             $result['pair'] = $bot['name'];
+            $result['trigger'] = 'EXAMPLE';
             $result['direction'] = 'long';
 
             $result_short['account_id'] = $account_info['bot_account_id'];
             $result_short['pair'] = $bot['name'];
+            $result_short['trigger'] = 'EXAMPLE';
             $result_short['direction'] = 'short';
 
             $result_tp_long['account_id'] = $account_info['bot_account_id'];
-            $result_tp_long['message'] = 'close_position';
+            $result_tp_long['message'] = 'close_awaymode';
             $result_tp_long['pair'] = $bot['name'];
+            $result_tp_long['trigger'] = 'EXAMPLE';
             $result_tp_long['direction'] = 'long';
 
             $result_tp_short['account_id'] = $account_info['bot_account_id'];
-            $result_tp_short['message'] = 'close_position';
+            $result_tp_short['message'] = 'close_awaymode';
             $result_tp_short['pair'] = $bot['name'];
+            $result_tp_short['trigger'] = 'EXAMPLE';
             $result_tp_short['direction'] = 'short';
+
+            $result_cp_long['account_id'] = $account_info['bot_account_id'];
+            $result_cp_long['message'] = 'close_position';
+            $result_cp_long['pair'] = $bot['name'];
+            $result_cp_long['trigger'] = 'EXAMPLE';
+            $result_cp_long['direction'] = 'long';
+
+            $result_cp_short['account_id'] = $account_info['bot_account_id'];
+            $result_cp_short['message'] = 'close_position';
+            $result_cp_short['pair'] = $bot['name'];
+            $result_cp_short['trigger'] = 'EXAMPLE';
+            $result_cp_short['direction'] = 'short';
 
             $table->tr()
                 ->td($bot['name'])
-                ->td('<span class="copy_text">'.json_encode($result).'</span>')
-                ->td('<span class="copy_text">'.json_encode($result_short).'</span>')
-                ->td('<span class="copy_text">'.json_encode($result_tp_long).'</span>')
-                ->td('<span class="copy_text">'.json_encode($result_tp_short).'</span>');
+                ->td('<span class="copy_text">'.json_encode($result , JSON_PRETTY_PRINT).'</span>')
+                ->td('<span class="copy_text">'.json_encode($result_short , JSON_PRETTY_PRINT).'</span>')
+                ->td('<span class="copy_text">'.json_encode($result_tp_long , JSON_PRETTY_PRINT).'</span>')
+                ->td('<span class="copy_text">'.json_encode($result_tp_short , JSON_PRETTY_PRINT).'</span>')
+                ->td('<span class="copy_text">'.json_encode($result_cp_long , JSON_PRETTY_PRINT).'</span>')
+                ->td('<span class="copy_text">'.json_encode($result_cp_short , JSON_PRETTY_PRINT).'</span>');
         }
     }
 

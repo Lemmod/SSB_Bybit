@@ -1,3 +1,7 @@
+
+
+
+
 // Action to add an account
 function a_add_account()
 {
@@ -70,7 +74,7 @@ function a_enable_account(id)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -124,7 +128,34 @@ function a_update_max_active_deals(id , deals)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
+                }
+                });
+            }
+        }
+    });
+    
+    return false;
+}
+
+// Set active deals
+function a_update_mad_direction(id , direction)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=update_mad_direction&id=' + id + '&direction=' + direction,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $( "#dialog" ).dialog({
+                    title : 'Notice',
+                    autoOpen : true,
+                    open: function() {
+                        $(this).html(response);
+                    } ,
+                    close: function() {
+                        //location.reload();
                 }
                 });
             }
@@ -151,7 +182,7 @@ function a_update_bo_size(id , size)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -178,7 +209,7 @@ function a_update_leverage(id , leverage)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -205,7 +236,7 @@ function a_update_leverage_mode(id , leverage_mode)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -232,7 +263,7 @@ function a_update_hedge(id , hedge_mode)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -261,7 +292,7 @@ function a_update_stoploss(id , use_stoploss)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -288,7 +319,7 @@ function a_update_stoploss_percentage(id , percentage)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -315,7 +346,7 @@ function a_update_away_mode(id , status)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -342,7 +373,7 @@ function a_update_away_closure(id , percentage)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -369,7 +400,7 @@ function a_update_away_stoploss(id , percentage)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -396,7 +427,7 @@ function a_update_active(id , status)
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -437,7 +468,7 @@ function a_load_tv_alerts(id)
             if (response == 'ERROR_NOT_LOGGED_IN') {
                 location.href = 'logout.php?response=incorrect_ajax_call';
             } else {
-                $('.tv_alerts').append(response);
+                $('#tv_alerts').append(response);
                 $('#bot_spec_alerts').DataTable({
 
                     "pageLength": 50 ,
@@ -463,6 +494,24 @@ function a_load_telegram_settings(id)
             } else {
                 
                 $('.telegram_settings').append(response);
+            }
+        }
+    });
+    
+    return false; 
+}
+
+// Load telegram settings
+function a_load_advanced_settings(id)
+{
+    $.ajax({
+        type: 'post',
+        url: 'requesthandler.php?action=load_advanced_settings&id=' + id,
+        success: function (response) {
+            if (response == 'ERROR_NOT_LOGGED_IN') {
+                location.href = 'logout.php?response=incorrect_ajax_call';
+            } else {
+                $('#bot_settings').append(response);
             }
         }
     });
@@ -548,7 +597,7 @@ function a_change_bots()
                         $(this).html(response);
                     } ,
                     close: function() {
-                        location.reload();
+                        //location.reload();
                 }
                 });
             }
@@ -626,11 +675,13 @@ $(document).on("click", '.add_account_link', function() {
 });
 
 // Link to Edit account
-$(document).on("click", '.edit_account_link', function() { 
+$(document).on("click", '.advanced_settings_link', function() { 
     $('.hide').hide();
     $('.home').show();
     $('.workspace').show();
-    $('.edit_account').show();
+    $('.advanced_settings').show();
+    $('#bot_settings').empty();
+    $('#tv_alerts').empty();
 });
 
 // Link to Delete account
@@ -666,6 +717,15 @@ $(document).on("change", '.mad_dropdown', function() {
     var deals = $(this).val();
 
     return a_update_max_active_deals(id , deals);
+});
+
+
+// Link to update max active deals
+$(document).on("change", '.mad_direction', function() { 
+    var id = $(this).attr("id");
+    var direction = $(this).val();
+
+    return a_update_mad_direction(id , direction);
 });
 
 // Link to update bo size
@@ -828,6 +888,19 @@ $(document).on("click", '.test_message_link', function() {
     var id = $(this).attr("id");
     
     return a_sent_telegram_message(id);
+});
+
+// Link to edit account msg
+$(document).on("click", '.advanced_settings_link', function() { 
+    var id = $(this).attr("id");
+    $('.hide').hide();
+    $('.home').show();
+    $('.workspace').show();
+    //$('.advanced_settings').empty();
+    $('.advanced_settings').show();
+
+    a_load_tv_alerts(id);
+    return a_load_advanced_settings(id);
 });
 
 // Link to logbook msg

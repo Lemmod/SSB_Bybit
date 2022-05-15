@@ -64,12 +64,14 @@ class DataMapper extends Core
      * @param  string $message
      * @return void
      */
-    public function insert_order_log($account_id , $pair , $message , $json_data = '') {
+    public function insert_order_log($account_id , $pair , $direction , $trigger_condition , $message , $json_data = '') {
 
         try{               
-            $stmt = $this->dbh->prepare("INSERT INTO order_log (account_id , pair ,  message , json_data) VALUES (:account_id , :pair ,  :message , :json_data)");
+            $stmt = $this->dbh->prepare("INSERT INTO order_log (account_id , pair , direction , trigger_condition , message , json_data) VALUES (:account_id , :pair , :direction , :trigger_condition ,  :message , :json_data)");
             $stmt->bindParam(':account_id', $account_id);      
             $stmt->bindParam(':pair', $pair);
+            $stmt->bindParam(':direction', $direction);
+            $stmt->bindParam(':trigger_condition', $trigger_condition);
             $stmt->bindParam(':message', $message);
             $stmt->bindParam(':json_data', $json_data);
             $stmt->execute();
@@ -272,6 +274,33 @@ class DataMapper extends Core
                
             $stmt = $this->dbh->prepare("UPDATE account_settings SET max_active_deals = :deals WHERE internal_account_id = :internal_account_id");
             $stmt->bindParam(':deals', $deals);
+            $stmt->bindParam(':internal_account_id', $internal_account_id);
+            $stmt->execute();
+
+            $stmt = null;
+
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+
+    }
+
+
+        
+    /**
+     * Update max active deals direction
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $direction
+     * @return void
+     */
+    public function update_mad_direction($internal_account_id , $direction) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE account_settings SET mad_direction = :direction WHERE internal_account_id = :internal_account_id");
+            $stmt->bindParam(':direction', $direction);
             $stmt->bindParam(':internal_account_id', $internal_account_id);
             $stmt->execute();
 
@@ -604,6 +633,28 @@ class DataMapper extends Core
             $stmt = $this->dbh->prepare("UPDATE raw_tv_input SET processed = :processed  WHERE input_id = :input_id");
             $stmt->bindValue(':processed', 2);
             $stmt->bindParam(':input_id', $input_id);
+            $stmt->execute();
+
+            $stmt = null;
+        }
+        catch (PDOExecption $e){
+            echo $e->getMessage();
+        }   
+    }
+
+    /**
+     * Update alerts , set them in process so when 3c lags they aren't used again
+     *
+     * @param  mixed $internal_account_id
+     * @param  mixed $setting
+     * @return void
+     */
+    public function update_order_awaymode_triggered($order_id) {
+
+        try{
+               
+            $stmt = $this->dbh->prepare("UPDATE order_log SET away_mode_triggered = 1  WHERE order_id = :order_id");
+            $stmt->bindParam(':order_id', $order_id);
             $stmt->execute();
 
             $stmt = null;

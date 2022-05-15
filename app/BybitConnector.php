@@ -77,12 +77,12 @@ class BybitConnector
     }
 
     /**
-     * Set the leverage
+     * Set the leverage type
      */
     public function set_leverage($params) {
         return $this->request_info('private/linear/position/switch-isolated' , $params , "POST");
     }
-    
+
     /**
      * Set leverage size
      */
@@ -117,6 +117,20 @@ class BybitConnector
      */
     public function update_position($params) {
         return $this->request_info('private/linear/position/trading-stop' , $params , "POST");
+    }
+
+    /**
+     * Get all trades
+     */
+    public function get_trades($params) {
+        return $this->request_info('private/linear/trade/execution/list' , $params , "GET");
+    }
+
+    /**
+     * Get ticker
+     */
+    public function get_ticker($symbol) {
+        return $this->request_info('/v2/public/tickers' , ['symbol' => $symbol]);
     }
 
 
