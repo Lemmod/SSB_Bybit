@@ -170,7 +170,7 @@ if ($action == 'load_advanced_settings') {
         ->td($response['internal_name'])
         ->td(create_dropdown_number_with_id(0 , 20 , 'mad_dropdown' , 'mad_dropdown' , 'account_'.$response['internal_id'] , $response['mad']))
         ->td(create_dropdown_options(['both' => 'Short + Long' , 'short_only' => 'Short Only' , 'long_only' => 'Long Only'], '' , 'mad_direction' , 'account_'.$response['internal_id'] , $response['mad_direction'] , true))
-        ->td(create_dropdown_number_with_id(1 , 500 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1))
+        ->td(create_dropdown_number_with_id(1 , 1000 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1))
         ->td(create_dropdown_number_with_id(0 , 100 , 'leverage' , 'leverage' , 'account_'.$response['internal_id'] , $response['leverage']))
         ->td(create_dropdown_options(['cross' , 'isolated'], '' , 'leverage_mode' , 'account_'.$response['internal_id'] , $response['leverage_mode']))
         ->td(create_dropdown_options(['0' => 'Disabled' , '1' => 'Enabled'], '' , 'hedge_mode' , 'account_'.$response['internal_id'] , $response['hedge_mode'] , true))
@@ -178,7 +178,7 @@ if ($action == 'load_advanced_settings') {
         ->td(create_dropdown_number_with_id(0 , 100 , 'stoploss_percentage' , 'stoploss_percentage' , 'account_'.$response['internal_id'] , $response['stoploss_percentage'] , 0.5))
         ->td(create_dropdown_options(['0' => 'Disabled' , '1' => 'Enabled'], '' , 'away_mode' , 'account_'.$response['internal_id'] , $response['away_mode'] , true))
         ->td(create_dropdown_number_with_id(0 , 100 , 'away_closure' , 'away_closure' , 'account_'.$response['internal_id'] , $response['away_closure']))
-        ->td(create_dropdown_number_with_id(0 , 100 , 'away_stoploss' , 'away_stoploss' , 'account_'.$response['internal_id'] , $response['away_stoploss']))
+        ->td(create_dropdown_number_with_id(0 , 100 , 'away_stoploss' , 'away_stoploss' , 'account_'.$response['internal_id'] , $response['away_stoploss'] , 0.5))
         ->td(create_dropdown_options(['0' => 'Disabled' , '1' => 'Enabled'], '' , 'active' , 'account_'.$response['internal_id'] , $response['active'] , true))
         ->td('<a class="logbook_link" id="account_'.$response['internal_id'].'"><i class="fas fa-book"></i>  Logbook</a>')
         ->td('<a class="delete_account_link" id="account_'.$response['internal_id'].'"><i class="fas fa-trash"></i>  Delete</a>');
