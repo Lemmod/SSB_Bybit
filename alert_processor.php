@@ -220,7 +220,7 @@ foreach($all_accounts as $account_wrapper) {
                     if(empty($pos_info)) {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Deal not open , skip alert.');
                         continue;
-                    } elseif ($latest_trigger['trigger_condition'] != $trigger) {
+                    } elseif ($latest_trigger['trigger_condition'] != $trigger  && strtolower($trigger) != 'override') {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Different trigger , skip alert. Trigger alert was '.$trigger.' while deal was opened with trigger '.$latest_trigger['trigger_condition']);
                         continue; 
                     } elseif ($latest_trigger['away_mode_triggered']) {
@@ -228,7 +228,11 @@ foreach($all_accounts as $account_wrapper) {
                         continue;   
                     } else {
 
-                        $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
+                        if (strtolower($trigger) == 'override') {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' [MANUAL OVERRIDE] Close position alert received');
+                        } else {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
+                        }
 
                         // Change S/L when deal is confirmed
                         $stop_loss_price = false;
@@ -275,14 +279,18 @@ foreach($all_accounts as $account_wrapper) {
                     if(empty($pos_info)) {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Deal not open , skip alert');
                         continue;
-                    } elseif ($latest_trigger['trigger_condition'] != $trigger) {
+                    } elseif ($latest_trigger['trigger_condition'] != $trigger && strtolower($trigger) != 'override') {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Different trigger , skip alert. Trigger alert was '.$trigger.' while latest trigger was '.$latest_trigger['trigger_condition']);
                         continue;  
                     } elseif ($latest_trigger['away_mode_triggered']) {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Away mode already triggered , skip alert');
                     } else {
 
-                        $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
+                        if (strtolower($trigger) == 'override') {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' [MANUAL OVERRIDE] Close position alert received');
+                        } else {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
+                        }
 
                         // Change S/L when deal is confirmed
                         $stop_loss_price = false;
@@ -339,13 +347,16 @@ foreach($all_accounts as $account_wrapper) {
                     if(empty($pos_info)) {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Deal not open , skip alert.');
                         continue;
-                    } elseif ($latest_trigger['trigger_condition'] != $trigger) {
+                    } elseif ($latest_trigger['trigger_condition'] != $trigger && strtolower($trigger) != 'override') {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Different trigger , skip alert. Trigger alert was '.$trigger.' while deal was opened with trigger '.$latest_trigger['trigger_condition']);
                         continue; 
                     } else {
 
-                        $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
-
+                        if (strtolower($trigger) == 'override') {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' [MANUAL OVERRIDE] Close position alert received');
+                        } else {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
+                        }
                         // Add closure order
                         $close_amount = $bybit->calculate_clean_close_amount($symbols , $data['pair'] , $pos_info['size']);
 
@@ -378,12 +389,16 @@ foreach($all_accounts as $account_wrapper) {
                     if(empty($pos_info)) {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Deal not open , skip alert');
                         continue;
-                    } elseif ($latest_trigger['trigger_condition'] != $trigger) {
+                    } elseif ($latest_trigger['trigger_condition'] != $trigger && strtolower($trigger) != 'override') {
                         $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Different trigger , skip alert. Trigger alert was '.$trigger.' while latest trigger was '.$latest_trigger['trigger_condition']);
                         continue;  
                     } else {
 
-                        $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
+                        if (strtolower($trigger) == 'override') {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' [MANUAL OVERRIDE] Close position alert received');
+                        } else {
+                            $dataMapper->insert_log($data['account_id'] , 0 , $data['pair'] , $type.' Close position alert received');
+                        }
 
                         // Add closure order
                         $close_amount = $bybit->calculate_clean_close_amount($symbols , $data['pair'] , $pos_info['size']);
