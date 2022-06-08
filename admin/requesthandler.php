@@ -170,7 +170,7 @@ if ($action == 'load_advanced_settings') {
         ->td($response['internal_name'])
         ->td(create_dropdown_number_with_id(0 , 20 , 'mad_dropdown' , 'mad_dropdown' , 'account_'.$response['internal_id'] , $response['mad']))
         ->td(create_dropdown_options(['both' => 'Short + Long' , 'short_only' => 'Short Only' , 'long_only' => 'Long Only'], '' , 'mad_direction' , 'account_'.$response['internal_id'] , $response['mad_direction'] , true))
-        ->td(create_dropdown_number_with_id(1 , 1000 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1))
+        ->td(create_dropdown_number_with_id(1 , 2000 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1))
         ->td(create_dropdown_number_with_id(0 , 100 , 'leverage' , 'leverage' , 'account_'.$response['internal_id'] , $response['leverage']))
         ->td(create_dropdown_options(['cross' , 'isolated'], '' , 'leverage_mode' , 'account_'.$response['internal_id'] , $response['leverage_mode']))
         ->td(create_dropdown_options(['0' => 'Disabled' , '1' => 'Enabled'], '' , 'hedge_mode' , 'account_'.$response['internal_id'] , $response['hedge_mode'] , true))
