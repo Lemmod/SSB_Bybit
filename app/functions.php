@@ -171,7 +171,7 @@ function create_bot_card($response , $bybit) {
             <ul class="list-group list-group-flush bg-dark">
                 <li class="list-group-item bg-dark">Direction : '.$direction.'</li>
                 <li class="list-group-item bg-dark">Max deals : '.create_dropdown_number_with_id(0 , 20 , 'mad_dropdown' , 'mad_dropdown' , 'account_'.$response['internal_id'] , $response['mad']).'</li>
-                <li class="list-group-item bg-dark">IPB : '.create_dropdown_number_with_id(1 , 500 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1).' </li>
+                <li class="list-group-item bg-dark">IPB : '.create_dropdown_number_with_id(1 , 2000 , 'bo_size' , 'bo_size' , 'account_'.$response['internal_id'] , $response['bo_size'] , 1).' </li>
                 <li class="list-group-item bg-dark">
                     <a class="logbook_link" id="account_'.$response['internal_id'].'"><i class="fas fa-book"></i>  Logbook</a> | <a class="advanced_settings_link" id="account_'.$response['internal_id'].'"> <i class="fas fa-cog"></i> Advanced settings</a>
                 </li>
